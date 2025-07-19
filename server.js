@@ -25,11 +25,15 @@ const db = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-// input data pemasukan
+// Input data pemasukan
 const incomeRoutes = require("./routes/incomeRoutes");
 app.use("/api/incomes", incomeRoutes);
 
-//  input data customer
+//  Input data Pengeluaran
+const expenseRoutes = require("./routes/expenseRoutes");
+app.use("/api/expenses", expenseRoutes);
+
+//  Input data customer
 const customerRoutes = require("./routes/customerRoutes");
 app.use("/api/customers", customerRoutes);
 
