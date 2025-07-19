@@ -37,6 +37,10 @@ app.use("/api/expenses", expenseRoutes);
 const customerRoutes = require("./routes/customerRoutes");
 app.use("/api/customers", customerRoutes);
 
+// Dashboard
+const dashboardRoutes = require("./routes/dashboardRoutes");
+app.use("/api/dashboard", dashboardRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server berjalan di http://localhost:${PORT}`);
 });
