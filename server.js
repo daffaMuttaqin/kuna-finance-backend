@@ -51,6 +51,10 @@ app.use("/api/reports", reportRoutes);
 const activityRoutes = require("./routes/activityRoutes");
 app.use("/api/activity", activityRoutes);
 
+// Update data Admin
+const userRoutes = require("./routes/userRoutes");
+app.use("/api/users", userRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server berjalan di http://localhost:${PORT}`);
 });
