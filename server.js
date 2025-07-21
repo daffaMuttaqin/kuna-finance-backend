@@ -2,6 +2,8 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const cron = require("node-cron");
+const runMonthlyOmzetCheck = require("./jobs/monthlyOmzetCheck");
 
 dotenv.config();
 
@@ -45,6 +47,15 @@ app.use("/api/dashboard", dashboardRoutes);
 const reportRoutes = require("./routes/reportRoutes");
 app.use("/api/reports", reportRoutes);
 
+// Activity Logs
+const activityRoutes = require("./routes/activityRoutes");
+app.use("/api/activity", activityRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server berjalan di http://localhost:${PORT}`);
+});
+
+cron.schedule("0 18 * * *", () => {
+  console.log("⏰ Menjalankan pengecekan omzet otomatis...");
+  runMonthlyOmzetCheck(); // fungsi cek dan kirim email
 });

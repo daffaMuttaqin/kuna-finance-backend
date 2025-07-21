@@ -12,9 +12,16 @@ const Expense = {
     db.query(sql, callback);
   },
 
+  // getById: (id, callback) => {
+  //   const sql = "SELECT * FROM expenses WHERE id = ?";
+  //   db.query(sql, [id], callback);
+  // },
+
   getById: (id, callback) => {
-    const sql = "SELECT * FROM expenses WHERE id = ?";
-    db.query(sql, [id], callback);
+    db.query("SELECT * FROM expenses WHERE id = ?", [id], (err, resData) => {
+      if (err) return callback(err, null);
+      callback(null, resData[0]);
+    });
   },
 
   create: (data, callback) => {

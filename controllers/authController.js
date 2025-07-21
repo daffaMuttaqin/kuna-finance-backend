@@ -59,6 +59,13 @@ exports.registerAdmin = async (req, res) => {
       (err, result) => {
         if (err)
           return res.status(500).json({ message: "Gagal mendaftarkan admin" });
+
+        logActivity(
+          req.user.id,
+          "CREATE",
+          `Menambahkan admin baru: ${name} - (${email})`
+        );
+
         res.status(201).json({ message: "Admin berhasil didaftarkan" });
       }
     );

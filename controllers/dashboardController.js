@@ -38,3 +38,30 @@ exports.getDashboardSummary = (req, res) => {
     });
   });
 };
+
+// Notification Omzet
+exports.getOmzetStatus = (req, res) => {
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  const year = now.getFullYear();
+  const startDate = `${year}-${month}-01`;
+  const endDate = `${year}-${month}-31`;
+  const target = parseInt(process.env.TARGET_OMZET);
+
+  const query = `SELECT SUM(total_price) AS total FROM incomes WHERE purchase_date BETWEEN ? AND ?`;
+
+  db.query(query, [startDate, endDate], (err, result) => {
+    if (err) return res.status(500).json({ error: "DB error" });
+
+    const total = result[0].total || 0;
+    const isReached = total >= target;
+    const selisih = isReached ? 0 : target - total;
+
+    res.json({
+      status: isReached ? "tercapai" : "belum tercapai",
+      omzet: total,
+      target,
+      selisih,
+    });
+  });
+};

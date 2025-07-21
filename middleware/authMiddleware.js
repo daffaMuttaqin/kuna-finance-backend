@@ -23,3 +23,14 @@ exports.isSuperAdmin = (req, res, next) => {
 
   next();
 };
+
+exports.isAdminOrSuperAdmin = (req, res, next) => {
+  const role = req.user.role;
+  if (role === "admin" || role === "superadmin") {
+    next();
+  } else {
+    return res
+      .status(403)
+      .json({ message: "Hanya Admin & Super Admin yang boleh mengakses." });
+  }
+};

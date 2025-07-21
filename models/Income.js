@@ -12,6 +12,13 @@ const Income = {
     db.query(sql, callback);
   },
 
+  getById: (id, callback) => {
+    db.query("SELECT * FROM incomes WHERE id = ?", [id], (err, resData) => {
+      if (err) return callback(err, null);
+      callback(null, resData[0]);
+    });
+  },
+
   create: (data, callback) => {
     const sql = `
       INSERT INTO incomes (item_name, customer_id, purchase_date, total_price, notes, created_by)
