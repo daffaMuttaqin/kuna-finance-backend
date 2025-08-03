@@ -82,14 +82,34 @@ exports.updateIncome = (req, res) => {
 
 exports.deleteIncome = (req, res) => {
   const { id } = req.params;
-  Income.delete(id, (err, result) => {
-    if (err) return res.status(500).json({ message: "Gagal menghapus data" });
-    // Tambahkan aktivitas log
-    logActivity(
-      req.user.id,
-      "DELETE",
-      `Menghapus data pemasukan: ${item_name} (Rp${total_price})`
-    );
-    res.json({ message: "Pemasukan berhasil dihapus" });
+
+  // Ambil data pemasukan sebelum dihapus
+  Income.getById(id, (err, income) => {
+    if (err)
+      return res
+        .status(500)
+        .json({ message: "Gagal mengambil data pemasukan" });
+    if (!income)
+      return res
+        .status(404)
+        .json({ message: "Data pemasukan tidak ditemukan" });
+
+    // Simpan informasi sebelum dihapus
+    const { item_name, total_price } = income;
+
+    // Lanjutkan proses hapus
+    Income.delete(id, (err2, result) => {
+      if (err2)
+        return res.status(500).json({ message: "Gagal menghapus data" });
+
+      // Tambahkan log aktivitas
+      logActivity(
+        req.user.id,
+        "DELETE",
+        `Menghapus data pemasukan: ${item_name} (Rp${total_price})`
+      );
+
+      res.json({ message: "Pemasukan berhasil dihapus" });
+    });
   });
 };
