@@ -22,12 +22,13 @@ exports.getExpenseById = (req, res) => {
 };
 
 exports.createExpense = (req, res) => {
-  const { item_name, expense_date, total_price, notes } = req.body;
-  if (!item_name || !expense_date || !total_price)
+  const { item_name, category, expense_date, total_price, notes } = req.body;
+  if (!item_name || !category || !expense_date || !total_price)
     return res.status(400).json({ message: "Data wajib diisi lengkap" });
 
   const data = {
     item_name,
+    category,
     expense_date,
     total_price,
     notes,
@@ -51,9 +52,9 @@ exports.createExpense = (req, res) => {
 
 exports.updateExpense = (req, res) => {
   const { id } = req.params;
-  const { item_name, expense_date, total_price, notes } = req.body;
+  const { item_name, category, expense_date, total_price, notes } = req.body;
 
-  const newData = { item_name, expense_date, total_price, notes };
+  const newData = { item_name, category, expense_date, total_price, notes };
 
   // Ambil data expenses yang lama
   Expense.getById(id, (err, oldData) => {
@@ -88,17 +89,58 @@ exports.updateExpense = (req, res) => {
 };
 
 exports.deleteExpense = (req, res) => {
-  Expense.delete(req.params.id, (err) => {
+  const { id } = req.params;
+
+  // Ambil data pemasukan sebelum dihapus
+  Expense.getById(id, (err, expense) => {
     if (err)
-      return res.status(500).json({ message: "Gagal menghapus pengeluaran" });
+      return res
+        .status(500)
+        .json({ message: "Gagal mengambil data pengeluaran" });
+    if (!expense)
+      return res
+        .status(404)
+        .json({ message: "Data pemasukan tidak ditemukan" });
 
-    // Tambahkan aktivitas log
-    logActivity(
-      req.user.id,
-      "DELETE",
-      `Menghapus pengeluaran: ${item_name} (Rp${total_price})`
-    );
+    // Simpan informasi sebelum dihapus
+    const { item_name, total_price } = expense;
 
-    res.json({ message: "Pengeluaran berhasil dihapus" });
+    // Lanjutkan proses hapus
+    Expense.delete(id, (err2, result) => {
+      if (err2)
+        return res.status(500).json({ message: "Gagal menghapus data" });
+
+      // Tambahkan aktivitas log
+      logActivity(
+        req.user.id,
+        "DELETE",
+        `Menghapus data pengeluaran: ${item_name} (Rp${total_price})`
+      );
+      res.json({ message: "Pmeasukan berhasil dihapus" });
+    });
   });
+};
+
+exports.getMonthlyCategorySummary = (req, res) => {
+  const { month, year } = req.query;
+
+  if (!month || !year) {
+    return res
+      .status(400)
+      .json({ message: "Parameter bulan dan tahun wajib diisi" });
+  }
+
+  Expense.getMonthlySummaryByCategory(
+    parseInt(month),
+    parseInt(year),
+    (err, results) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ message: "Gagal mengambil ringkasan pengeluaran" });
+      }
+
+      res.json(results);
+    }
+  );
 };

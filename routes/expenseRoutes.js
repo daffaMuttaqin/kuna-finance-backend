@@ -10,5 +10,10 @@ router.get("/:id", verifyToken, expenseController.getExpenseById);
 router.post("/", verifyToken, expenseController.createExpense);
 router.put("/:id", verifyToken, expenseController.updateExpense);
 router.delete("/:id", verifyToken, expenseController.deleteExpense);
+router.get(
+  "/summary/category",
+  verifyToken,
+  expenseController.getMonthlyCategorySummary
+);
 
 module.exports = router;

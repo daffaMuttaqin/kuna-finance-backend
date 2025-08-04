@@ -26,13 +26,14 @@ const Expense = {
 
   create: (data, callback) => {
     const sql = `
-      INSERT INTO expenses (item_name, expense_date, total_price, notes, created_by)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO expenses (item_name, category, expense_date, total_price, notes, created_by)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
     db.query(
       sql,
       [
         data.item_name,
+        data.category,
         data.expense_date,
         data.total_price,
         data.notes,
@@ -45,12 +46,19 @@ const Expense = {
   update: (id, data, callback) => {
     const sql = `
       UPDATE expenses
-      SET item_name = ?, expense_date = ?, total_price = ?, notes = ?
+      SET item_name = ?, category = ?, expense_date = ?, total_price = ?, notes = ?
       WHERE id = ?
     `;
     db.query(
       sql,
-      [data.item_name, data.expense_date, data.total_price, data.notes, id],
+      [
+        data.item_name,
+        data.category,
+        data.expense_date,
+        data.total_price,
+        data.notes,
+        id,
+      ],
       callback
     );
   },
@@ -58,6 +66,20 @@ const Expense = {
   delete: (id, callback) => {
     const sql = "DELETE FROM expenses WHERE id = ?";
     db.query(sql, [id], callback);
+  },
+
+  // Ambil ringkasan pengeluaran bulanan berdasarkan kategori
+  getMonthlySummaryByCategory: (month, year, callback) => {
+    const query = `
+    SELECT 
+      category,
+      SUM(total_price) AS total
+    FROM expenses
+    WHERE MONTH(expense_date) = ? AND YEAR(expense_date) = ?
+    GROUP BY category
+    ORDER BY category ASC
+  `;
+    db.query(query, [month, year], callback);
   },
 };
 
