@@ -14,7 +14,7 @@ const Customer = {
 
   create: (data, callback) => {
     const sql =
-      "INSERT INTO customers (name, gender, address, phone, instagram) VALUES (?, ?, ?, ?)";
+      "INSERT INTO customers (name, gender, address, phone, instagram) VALUES (?, ?, ?, ?, ?)";
     db.query(
       sql,
       [data.name, data.gender, data.address, data.phone, data.instagram],
