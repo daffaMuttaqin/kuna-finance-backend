@@ -22,22 +22,25 @@ exports.getCustomerById = (req, res) => {
 };
 
 exports.createCustomer = (req, res) => {
-  const { name, address, phone, instagram } = req.body;
+  const { name, gender, address, phone, instagram } = req.body;
   if (!name) return res.status(400).json({ message: "Nama wajib diisi" });
 
-  Customer.create({ name, address, phone, instagram }, (err, result) => {
-    if (err)
-      return res.status(500).json({ message: "Gagal menambahkan pelanggan" });
+  Customer.create(
+    { name, gender, address, phone, instagram },
+    (err, result) => {
+      if (err)
+        return res.status(500).json({ message: "Gagal menambahkan pelanggan" });
 
-    // Tambahkan aktivitas log
-    logActivity(req.user.id, "CREATE", `Menambahkan Customer: ${name}`);
+      // Tambahkan aktivitas log
+      logActivity(req.user.id, "CREATE", `Menambahkan Customer: ${name}`);
 
-    res.status(201).json({ message: "Pelanggan berhasil ditambahkan" });
-  });
+      res.status(201).json({ message: "Pelanggan berhasil ditambahkan" });
+    }
+  );
 };
 
 exports.updateCustomer = (req, res) => {
-  const { name, address, phone, instagram } = req.body;
+  const { name, gender, address, phone, instagram } = req.body;
   const customerId = req.params.id;
 
   // Ambil data lama terlebih dahulu
@@ -47,7 +50,7 @@ exports.updateCustomer = (req, res) => {
     }
 
     // Data baru
-    const newData = { name, address, phone, instagram };
+    const newData = { name, gender, address, phone, instagram };
 
     // Bandingkan dan catat perubahan
     let changes = [];

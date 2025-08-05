@@ -14,10 +14,10 @@ const Customer = {
 
   create: (data, callback) => {
     const sql =
-      "INSERT INTO customers (name, address, phone, instagram) VALUES (?, ?, ?, ?)";
+      "INSERT INTO customers (name, gender, address, phone, instagram) VALUES (?, ?, ?, ?)";
     db.query(
       sql,
-      [data.name, data.address, data.phone, data.instagram],
+      [data.name, data.gender, data.address, data.phone, data.instagram],
       callback
     );
   },
@@ -25,12 +25,12 @@ const Customer = {
   update: (id, data, callback) => {
     const sql = `
       UPDATE customers 
-      SET name = ?, address = ?, phone = ?, instagram = ?
+      SET name = ?, gender = ?, address = ?, phone = ?, instagram = ?
       WHERE id = ?
     `;
     db.query(
       sql,
-      [data.name, data.address, data.phone, data.instagram, id],
+      [data.name, data.gender, data.address, data.phone, data.instagram, id],
       callback
     );
   },
