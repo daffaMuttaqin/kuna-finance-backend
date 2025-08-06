@@ -91,7 +91,7 @@ exports.updateExpense = (req, res) => {
 exports.deleteExpense = (req, res) => {
   const { id } = req.params;
 
-  // Ambil data pemasukan sebelum dihapus
+  // Ambil data pengeluaran sebelum dihapus
   Expense.getById(id, (err, expense) => {
     if (err)
       return res
@@ -100,7 +100,7 @@ exports.deleteExpense = (req, res) => {
     if (!expense)
       return res
         .status(404)
-        .json({ message: "Data pemasukan tidak ditemukan" });
+        .json({ message: "Data Pengeluaran tidak ditemukan" });
 
     // Simpan informasi sebelum dihapus
     const { item_name, total_price } = expense;
@@ -116,7 +116,7 @@ exports.deleteExpense = (req, res) => {
         "DELETE",
         `Menghapus data pengeluaran: ${item_name} (Rp${total_price})`
       );
-      res.json({ message: "Pmeasukan berhasil dihapus" });
+      res.json({ message: "Pengeluaran berhasil dihapus" });
     });
   });
 };
