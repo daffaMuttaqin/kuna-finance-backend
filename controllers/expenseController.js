@@ -144,3 +144,25 @@ exports.getMonthlyCategorySummary = (req, res) => {
     }
   );
 };
+
+// Get data perbulan
+exports.getExpensesByMonth = (req, res) => {
+  const month = parseInt(req.query.month);
+  const year = parseInt(req.query.year);
+
+  if (!month || !year) {
+    return res
+      .status(400)
+      .json({ message: "Parameter bulan dan tahun diperlukan" });
+  }
+
+  Expense.getExpensesByMonth(month, year, (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+
+    if (!results || results.length === 0) {
+      return res.status(404).json({ message: "Data tidak ditemukan" });
+    }
+
+    res.json(results);
+  });
+};
