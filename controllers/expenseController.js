@@ -149,7 +149,7 @@ exports.getMonthlyCategorySummary = (req, res) => {
 exports.getExpensesByMonth = (req, res) => {
   const month = parseInt(req.query.month);
   const year = parseInt(req.query.year);
-
+  // Jika idak ada input dari bulan dan tahun
   if (!month || !year) {
     return res
       .status(400)
